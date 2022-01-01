@@ -1,4 +1,6 @@
 const $animalForm = document.querySelector('#animal-form');
+const $zookeeperForm = document.querySelector('#zookeeper-form');
+
 
 const handleAnimalFormSubmit = event => {
   event.preventDefault();
@@ -28,9 +30,6 @@ const handleAnimalFormSubmit = event => {
   sendAnimal(animalObject);
 };
 
-$animalForm.addEventListener('submit', handleAnimalFormSubmit);
-
-
 const sendAnimal = async function(animalObject){
   // local call from server, since script is on server already
   let response = await fetch('/api/animals', { 
@@ -50,5 +49,44 @@ const sendAnimal = async function(animalObject){
   }else{
     alert('Error: ' + response.statusText);
   }
-  
 }
+
+const handleZookeeperFormSubmit = event => {
+  event.preventDefault();
+
+  // get animal data and organize it
+  const name = $zookeeperForm.querySelector('[name="zookeeper-name"]').value;
+  const age = parseInt($zookeeperForm.querySelector('[name="age"]').value);
+  const favoriteAnimal = $zookeeperForm.querySelector('[name="favorite-animal"]').value;
+
+  const zookeeperObject = { name, age, favoriteAnimal};
+  sendZookeeper(zookeeperObject);
+};
+
+const sendZookeeper = async function(zookeeperObject){
+  // local call from server, since script is on server already
+  let response = await fetch('/api/zookeepers', { 
+    method: 'POST',
+    // Set header to know to receive json data
+    headers: { 
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(zookeeperObject) // Body of request (json object to send)
+  });
+
+  if(response.ok){
+    let jsonResponse = await response.json();
+    console.log(jsonResponse);
+    alert('Thank you for adding a Zookeeper!');
+  }else{
+    alert('Error: ' + response.statusText);
+  }
+
+}
+
+
+
+$animalForm.addEventListener('submit', handleAnimalFormSubmit);
+$zookeeperForm.addEventListener('submit', handleZookeeperFormSubmit);
+
