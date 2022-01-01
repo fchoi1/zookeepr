@@ -22,17 +22,27 @@ const printResults = resultArr => {
   $displayArea.innerHTML = animalHTML.join('');
 };
 
-const getAnimals = (formData = {}) => {
+const getAnimals = async (formData = {}) => {
   let queryUrl = '/api/animals?';
 
+  // check for additional queries
   Object.entries(formData).forEach(([key, value]) => {
     queryUrl += `${key}=${value}&`;
   });
-
   console.log(queryUrl);
+
+  let response = await fetch(queryUrl)
+  if(response.ok){
+    let animalData = await response.json();
+    printResults(animalData);
+  }else{
+    alert('Error: ' + response.statusText);
+  }
 
 };
 
+
+// Parses any queries params to get animal
 const handleGetAnimalsSubmit = event => {
   event.preventDefault();
   const dietRadioHTML = $animalForm.querySelectorAll('[name="diet"]');

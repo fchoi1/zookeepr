@@ -25,7 +25,30 @@ const handleAnimalFormSubmit = event => {
     personalityTraits.push(selectedTraits[i].value);
   }
   const animalObject = { name, species, diet, personalityTraits };
-
+  sendAnimal(animalObject);
 };
 
 $animalForm.addEventListener('submit', handleAnimalFormSubmit);
+
+
+const sendAnimal = async function(animalObject){
+  // local call from server, since script is on server already
+  let response = await fetch('/api/animals', { 
+    method: 'POST',
+    // Set header to know to receive json data
+    headers: { 
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(animalObject) // Body of request (json object to send)
+  });
+
+  if(response.ok){
+    let jsonResponse = await response.json();
+    console.log(jsonResponse);
+    alert('Thank you for adding an animal!!');
+  }else{
+    alert('Error: ' + response.statusText);
+  }
+  
+}
